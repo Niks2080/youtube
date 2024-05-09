@@ -46,7 +46,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const existedUser = await User.findOne({
     $or: [{ username }, { email }],
   });
-  if (existedUser) {
+  if (!existedUser) {
     throw new ApiError(409, "User with email or username already exists");
   }
 
@@ -195,7 +195,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       throw new ApiError(401, "invalid refresh token");
     }
 
-    if (incomingRefreshToken !== user?.refreshToken) {
+    if (!incomingRefreshToken !== user?.refreshToken) {
       throw new ApiError(401, "refresh token is expired or used");
     }
 
