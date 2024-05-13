@@ -1,9 +1,12 @@
 // require("dotenv").config({ path: "./env" });
 
+import express from "express"
+const apps = express();
 import dotenv from "dotenv";
-import { app } from "./app.js";
+import { app } from "./app.js"; 
 import connectDB from "./db/index.js";
-
+apps.use(express.json());
+apps.use(express.urlencoded({ extended: true }));
 dotenv.config({
   path: "./.env",
 });
