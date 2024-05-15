@@ -22,9 +22,9 @@ router.route("/upload-video").post(
 // Route definitions
 
 router.route("/get-videos").get(getVideos);
-router.route("/get-video").get(getVideo);
-router.route("/update-videos:videoId").get(updateVideo);
-router.route("/delete-videos:videoId").get(deleteVideo);
+router.route("/get-video/:videoId").get(getVideo);
+router.route("/update-video/:videoId").get(updateVideo);
+router.route("/delete-video/:videoId").get(deleteVideo);
 router.delete("/:videoId", deleteVideo);
 
 export default router;

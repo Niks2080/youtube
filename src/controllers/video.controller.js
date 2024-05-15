@@ -49,11 +49,10 @@ const updateVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   const { videoFile, thumbnail, title, description, duration } = req.body;
 
-  let video = await Video.findById(videoId);
-
-  if (!video) {
-    throw new ApiError(404, "Video not found");
-  }
+ if (!title || !description || !thumbnail || !duration) {
+   res.status(400).json({ message: "All fields are required." });
+   return;
+ }
 
   // Update video fields
   video.videoFile = videoFile;
@@ -79,7 +78,7 @@ const deleteVideo = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Video not found");
   }
 
-  await video.remove();
+  await video.deleteOne({ _id: req.params });
 
   return res
     .status(200)
@@ -90,13 +89,14 @@ const deleteVideo = asyncHandler(async (req, res) => {
 const getVideos = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
 
-  const options = {
-    page: parseInt(page, 10),
-    limit: parseInt(limit, 10),
-    sort: { createdAt: -1 }, // Sort by creation date in descending order
-  };
+  const pageNumber = parseInt(page, 10);
+  const limitNumbar = parseInt(limit, 10);
+  const skip = (pageNumber - 1) * limitNumbar;
 
-  const videos = await Video.paginate({}, options);
+  const videos = await Video.find({})
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limitNumbar);
 
   return res
     .status(200)
